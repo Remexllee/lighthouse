@@ -8,7 +8,6 @@
 const _set = require('lodash.set');
 
 const i18n = require('./i18n.js');
-const LHError = require('../lh-error.js');
 
 /**
  * @fileoverview Use the lhr.i18n.icuMessagePaths object to change locales
