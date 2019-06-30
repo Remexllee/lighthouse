@@ -32,7 +32,7 @@ describe('DragAndDrop', () => {
   afterEach(testHelpers.cleanupJsDomGlobals);
 
   it('document responds to drop event with file', () => {
-    const mockCallback = jest.fn()
+    const mockCallback = jest.fn();
     new DragAndDrop(mockCallback);
 
     // create custom drop event with mock files in dataTransfer
@@ -43,7 +43,7 @@ describe('DragAndDrop', () => {
   });
 
   it('document responds to drop event without file', () => {
-    const mockCallback = jest.fn()
+    const mockCallback = jest.fn();
     new DragAndDrop(mockCallback);
 
     document.dispatchEvent(createCustomEvent('drop', 'dataTransfer', null));
