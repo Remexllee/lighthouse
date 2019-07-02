@@ -15,14 +15,6 @@ testHelpers.setupJsDomGlobals();
 
 const DragAndDrop = require('../app/src/drag-and-drop.js');
 
-function createCustomEvent(type, key, value) {
-  const customDropEvent = new window.CustomEvent(type);
-  if (key && value) {
-    customDropEvent[key] = value;
-  }
-  return customDropEvent;
-}
-
 describe('DragAndDrop', () => {
   beforeEach(function() {
     // Reconstruct page on every test so event listeners are clean.
@@ -36,17 +28,19 @@ describe('DragAndDrop', () => {
     new DragAndDrop(mockCallback);
 
     // create custom drop event with mock files in dataTransfer
-    document.dispatchEvent(createCustomEvent('drop', 'dataTransfer', {
+    const event = new window.CustomEvent('drop');
+    event.dataTransfer = {
       files: ['mock file'],
-    }));
+    };
+    document.dispatchEvent(event);
     expect(mockCallback).toBeCalledWith('mock file');
   });
 
-  it('document responds to drop event without file', () => {
+  it('document ignores drop event without file', () => {
     const mockCallback = jest.fn();
     new DragAndDrop(mockCallback);
 
-    document.dispatchEvent(createCustomEvent('drop', 'dataTransfer', null));
+    document.dispatchEvent(new window.CustomEvent('drop'));
     expect(mockCallback).not.toBeCalled();
   });
 
@@ -54,20 +48,21 @@ describe('DragAndDrop', () => {
     const mockCallback = jest.fn();
     new DragAndDrop(mockCallback);
 
-    const dragoverEvent = createCustomEvent('dragover', 'dataTransfer', {
+    const event = new window.CustomEvent('dragover');
+    event.dataTransfer = {
       files: ['mock file'],
-    });
-    document.dispatchEvent(dragoverEvent);
-    expect(dragoverEvent.dataTransfer.dropEffect).toEqual('copy');
+    };
+    document.dispatchEvent(event);
+    expect(event.dataTransfer.dropEffect).toEqual('copy');
   });
 
-  it('document responds to dragover event without file', () => {
+  it('document ignores dragover event without file', () => {
     const mockCallback = jest.fn();
     new DragAndDrop(mockCallback);
 
-    const dragoverEvent = createCustomEvent('dragover', 'dataTransfer', null);
-    document.dispatchEvent(dragoverEvent);
-    expect(dragoverEvent.dataTransfer).toBeUndefined();
+    const event = new window.CustomEvent('dragover');
+    document.dispatchEvent(event);
+    expect(event.dataTransfer).toBeUndefined();
   });
 
   it('document responds to mouseleave event when not dragging', () => {
